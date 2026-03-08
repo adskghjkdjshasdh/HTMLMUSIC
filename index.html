@@ -1,0 +1,31 @@
+<input id="searchBox" placeholder="Search SoundCloud">
+<button onclick="search()">Search</button>
+<div id="results"></div>
+<div id="player"></div>
+
+<script>
+const BACKEND_URL = "https://my-soundcloud-proxy.onrender.com"; // replace with your Render URL
+
+async function search() {
+    const query = document.getElementById("searchBox").value;
+    const res = await fetch(`${BACKEND_URL}/search?q=${encodeURIComponent(query)}`);
+    const data = await res.json();
+
+    const resultsDiv = document.getElementById("results");
+    resultsDiv.innerHTML = "";
+
+    data.collection.forEach(track => {
+        const div = document.createElement("div");
+        div.innerHTML = `<b>${track.title}</b> - ${track.user.username}`;
+        div.style.cursor = "pointer";
+        div.onclick = () => {
+            document.getElementById("player").innerHTML = `
+                <iframe width="500" height="166" scrolling="no" frameborder="no"
+                src="https://w.soundcloud.com/player/?url=${encodeURIComponent(track.permalink_url)}">
+                </iframe>
+            `;
+        };
+        resultsDiv.appendChild(div);
+    });
+}
+</script>
