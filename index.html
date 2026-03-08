@@ -1,10 +1,32 @@
-<input id="searchBox" placeholder="Search SoundCloud">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>HTMLMUSIC - SoundCloud Search</title>
+<style>
+body { font-family: Arial; text-align:center; background:#121212; color:white; padding:30px; }
+input { width:300px; padding:8px; font-size:16px; }
+button { padding:8px 12px; font-size:16px; cursor:pointer; }
+#results { margin-top:20px; display:flex; flex-direction:column; align-items:center; }
+.track { background:#1f1f1f; padding:10px; margin:8px; width:400px; cursor:pointer; border-radius:6px; display:flex; align-items:center; }
+.track img { width:50px; height:50px; margin-right:10px; border-radius:4px; }
+.trackInfo { text-align:left; }
+.track:hover { background:#333; }
+iframe { margin-top:20px; }
+</style>
+</head>
+<body>
+
+<h1>HTMLMUSIC - SoundCloud Search</h1>
+
+<input id="searchBox" placeholder="Search for music">
 <button onclick="search()">Search</button>
+
 <div id="results"></div>
 <div id="player"></div>
 
 <script>
-const BACKEND_URL = "https://my-soundcloud-proxy.onrender.com"; // replace with your Render URL
+const BACKEND_URL = ""; // same domain as server
 
 async function search() {
     const query = document.getElementById("searchBox").value;
@@ -16,8 +38,18 @@ async function search() {
 
     data.collection.forEach(track => {
         const div = document.createElement("div");
-        div.innerHTML = `<b>${track.title}</b> - ${track.user.username}`;
-        div.style.cursor = "pointer";
+        div.className = "track";
+
+        const art = track.artwork_url || track.user.avatar_url;
+
+        div.innerHTML = `
+            <img src="${art}">
+            <div class="trackInfo">
+                <b>${track.title}</b><br>
+                ${track.user.username}
+            </div>
+        `;
+
         div.onclick = () => {
             document.getElementById("player").innerHTML = `
                 <iframe width="500" height="166" scrolling="no" frameborder="no"
@@ -25,7 +57,11 @@ async function search() {
                 </iframe>
             `;
         };
+
         resultsDiv.appendChild(div);
     });
 }
 </script>
+
+</body>
+</html>

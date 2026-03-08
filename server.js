@@ -1,11 +1,9 @@
-import express from 'express';
-import fetch from 'node-fetch';
-import cors from 'cors';
+const express = require('express');
+const fetch = require('node-fetch');
+const cors = require('cors');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-
-// Use your Render secret
 const CLIENT_ID = process.env.SOUNDCLOUD_CLIENT_ID;
 
 if (!CLIENT_ID) {
@@ -13,9 +11,13 @@ if (!CLIENT_ID) {
     process.exit(1);
 }
 
-// Allow frontend to fetch from anywhere
+// Serve static HTML from root
+app.use(express.static("."));
+
+// Allow frontend to fetch from this backend
 app.use(cors());
 
+// Search endpoint
 app.get('/search', async (req, res) => {
     const query = req.query.q;
     if (!query) return res.status(400).json({ error: "Missing query" });
